@@ -113,7 +113,7 @@ class PhotoManager {
         
 //        .responseDecodable(of: Photo.self) { response in //responseDecodable(을 사용할 경우는 디코딩 실패시 failure)는 Photo.self때문에 하나의 모델에 대해서만 디코딩이 가능! 하지만 실패한 경우에도 디코딩이 필요할 수 있다
 //            switch response.result {
-//            case .success(let value):
+//            case .success(let v=alue):
 //                dump(value)
 //                
 //                success(value)
