@@ -174,7 +174,7 @@ class SignUpViewController: UIViewController {
         
         
         
-//            .map { "안녕하세요" }
+//            .랴ㅣ { "안녕하세요" }
 //            .bind(to: emailTextField.rx.text)
 //            .disposed(by: disposeBag)
     }

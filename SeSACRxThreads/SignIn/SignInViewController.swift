@@ -104,7 +104,7 @@ class SignInViewController: UIViewController {
 //            .map { text in //쭈르르 위에서 옵셔널까지 해제한 텍스트를 text(클로저의 파라미터)로 받아서
 //                text.count >= 4
 //              }
-//            .map {  // 맵으로 "조건" 추가 : 새롭게 데이터를 변환을 해주는 것
+//            .map {  // 맵으로 "조건" 추가(만능) : 새롭게 데이터를 변환을 해주는 것
 //                $0.count >= 4 // bool값으로 타입을 변경해줌 //클로저 파라미터 사용안할때는 임시로 지정해주는 달러 사인 :달러영
 //            }
 //            .bind(with: self) { owner, value in
