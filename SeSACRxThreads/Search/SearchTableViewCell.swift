@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SearchTableViewCell: UITableViewCell {
     
@@ -37,7 +39,27 @@ final class SearchTableViewCell: UITableViewCell {
         button.layer.cornerRadius = 16
         return button
     }()
-     
+    
+    
+    
+    
+    //셀도 디스포즈백을 가질 수 있다
+     var disposeBag = DisposeBag()
+    
+    // 셀이 재사용이 될 때 셀의 백그라운드컬러를 화이트로 바꿀 수 있는 :  재사용될때 구독을 해제하는 형태로 활용해보자
+    override func prepareForReuse() { //재사용될때 초기화
+        super.prepareForReuse()
+        print(#function)
+//        backgroundColor = .white
+        
+        
+        //스크롤할때마다 셀이 재사용되면서 disposeBag도 계속 새로 셀마다 하나하나 바꿔줘서 중첩을 방지 : 그럼 디인잇이 제대로 일어나서 화면전환시 여러번 되는 현상 해결
+        disposeBag = DisposeBag() // 뷰컨말고 셀에서 구독을 관리: 구독 취소 : "구독 중첩 해결 방법"
+        
+    }
+    
+    
+    
      
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

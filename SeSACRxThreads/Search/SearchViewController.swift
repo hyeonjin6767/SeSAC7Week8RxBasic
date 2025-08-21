@@ -24,9 +24,7 @@ class SearchViewController: UIViewController {
         view.separatorStyle = .none
        return view
      }()
-    
-//    let items = Observable.just(["First Item", "Second Item", "Third Item"]) //아래껄 위로
-    
+        
     let searchBar = UISearchBar()
     
     let disposeBag = DisposeBag()
@@ -44,8 +42,15 @@ class SearchViewController: UIViewController {
     // 위의 옵저버블을 처리기능(append)까지 가능하도록 BehaviorSubject로 바꾸기 : 옵저버블 역할도 해서 subscribe, bind 다 사용가능
 //    lazy var items = BehaviorSubject(value: ["First Item", "Second Item", "Third Item"]) // BehaviorSubject : 전달+수습 2개 다 하는애
     
-    let items = BehaviorSubject(value: ["First","ds","adev","b","AF"])
+//    let items = BehaviorSubject(value: ["First","ds","adev","b","AF"])
 
+    
+    var data = [ "김새싹", "고래", "고래밥", "ㅇㄹㄴㅇ", "232", "sdsf",  "ㅇㅁㄹ", "ㄷㄱㅎsdfgbsdf", "ㅎ", "ㅇㅁㄹ", "ㄷㄱㅎsdfgbsdf", "ㅎ"]
+//    lazy var items = Observable.just(data)
+    lazy var items = BehaviorSubject(value: data)
+
+
+    
     
     
     var den = "den"
@@ -65,8 +70,94 @@ class SearchViewController: UIViewController {
     
     func bind() {
         print(#function)
+      
+        items //observable
+        .bind(to: tableView.rx.items) { (tableView, row, element) in
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: SearchTableViewCell.identifier) as! SearchTableViewCell
+            cell.appNameLabel.text = "\(element) @ row \(row)"
+            
+            
+            
+            // 구독 중첩 : 셀의 재사용 메커니즘 때문 : 닫기버튼의 dispose를 뷰컨에서 잡고 있어서 : 재사용되는 셀의 메모리가 누적이 되서 쌓여있던 메모리가 다 실행되서
+            cell.downloadButton.rx.tap
+                .bind(with: self) { owner, _ in
+                    print("클릭되었습니다")
+                    let vc = DetailViewController()
+                    owner.navigationController?.pushViewController(vc, animated: true) // 화면 전환이 2번 되는 이유? : "구독이 중첩되서"
+                }
+//                .disposed(by: self.disposeBag) // 지금은 메모리누수 좀 생겨도 되~ : 나중에 고려하자
+                .disposed(by: cell.disposeBag) // 이걸 뷰컨말고 셀에서 담당으로 변경
+
+            
+            
+            
+            return cell
+            
+        }
+        .disposed(by: disposeBag)
         
         
+        Observable.zip(
+            tableView.rx.modelSelected(String.self),
+            tableView.rx.itemSelected //묶는 순서에 따라 바인드의 매개변수 순서가 정해짐
+        )
+        .bind(with: self) { owner, value in
+            print(value.0)
+            print(value.1)
+        }
+        .disposed(by: disposeBag)
+        
+        // 서치바에 입력후 엔터 치면 배열에 데이터 추가, 테이블뷰에 반영
+//        searchBar.rx.searchButtonClicked
+//            .withLatestFrom(searchBar.rx.text.orEmpty) { _, text in
+//                return text // 매개변수를 그대로 갖다쓰기 여서 간단하게 대괄호 부분 생략
+//            }
+//
+        
+//        searchBar.rx.searchButtonClicked
+//            .withLatestFrom(searchBar.rx.text.orEmpty)
+//            .bind(with: self) { owner, value in
+//                print(value)
+//                owner.data.insert(value, at: 0)
+//                owner.items.onNext(owner.data) //등호 대신 onNext로 전달 : onNext랑 같은게 그냥 on
+////                owner.items.on(next: owner.data) //위아래 같은 의미
+//            }
+//            .disposed(by: disposeBag)
+        
+        
+        // 실시간 검색
+        searchBar.rx.text.orEmpty
+            .debounce(.seconds(1), scheduler: MainScheduler.instance) // 1초동안 입력 변화가 없을 때 실행
+            .distinctUntilChanged() // 데이터가 바뀌지 않았으면 이벤트를 방출하지 말라 : 같은 단어 검색안되도록
+            .bind(with: self) { owner, value in
+                print(value) //갖고 있는 data에서 value가 포함된 data를 필터로 가져와보자
+                let filter = value.isEmpty ? owner.data : owner.data.filter { $0.contains(value) }
+                owner.items.onNext(filter)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        
+        // 1대1 매칭 개념은 첨엔 괜춘 : 근데 고착되지않게 주의 : "다른 곳에서도 쓰이니까 갇혀있지마"
+        // withLatestFrom : 버튼 탭에 사용 / debounce : 실시간 검색에 사용 같은 고착화 시키진 않기
+        
+        
+        //어제 과제의 생각해보기 :더보기 버튼 클릭 시 화면 전환이 되는 로직을 구성하면, 수직스크롤을 여러번 했을 때 화면 전환이 여러번 일어나는 현상을 발견할 수 있습니다. 왜그럴까요?
+        
+        
+        
+        
+        
+        
+        
+        
+        
+// ------------------------------------------아래 싹 주석처리-------------------------------------------------------------
+        
+        
+        
+        /*
         
         
         searchBar.rx.text.orEmpty //우리가 알던 orEmpty와 같아
@@ -195,6 +286,8 @@ class SearchViewController: UIViewController {
 //        .disposed(by: disposeBag)
 //        
  
+         
+         */
     }
     
     func operatorTest() {

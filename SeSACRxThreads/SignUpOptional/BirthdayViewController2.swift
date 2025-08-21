@@ -1,16 +1,16 @@
 //
-//  BirthdayViewController.swift
+//  BirthdayViewController2.swift
 //  SeSACRxThreads
 //
-//  Created by jack on 2023/10/30.
+//  Created by 박현진 on 8/21/25.
 //
- 
+
 import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
 
-class BirthdayViewController: UIViewController {
+class BirthdayViewController2: UIViewController {
     
     let birthDayPicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -32,7 +32,7 @@ class BirthdayViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .equalSpacing
-        stack.spacing = 10 
+        stack.spacing = 10
         return stack
     }()
     
@@ -68,17 +68,8 @@ class BirthdayViewController: UIViewController {
   
     let nextButton = PointButton(title: "가입하기")
     
-    
     let disposeBag = DisposeBag()
-    
-    
-//    let userDate = BehaviorSubject(value: Date()) // Data() : 오늘 날짜를 보여지게
-    let userDate = BehaviorRelay(value: Date())
-    // BehaviorRelays도 바인드처럼 넥스트이벤트만 다루는 애 서브젝트 업그레이드가 릴레이 : (서브스크라이브 업그레이드가 바인드인 것 처럼)
-    // 우선은 기분에 따라 골라서 써봐
-    // "drive"는 또 뭐지 :  바인드 업그레이드 버전? : 넥스트이벤트만 담당 및 메인쓰레드에서만 동작 하는 애
-    
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,55 +78,12 @@ class BirthdayViewController: UIViewController {
         
         configureLayout()
         
-        bind()
-//        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
-        
-        
+        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
     }
     
-    func bind() {
-        
-        // birthDayPicker이 옵저버블의 역할로
-        
-//        birthDayPicker.rx.date
-//            .bind(with: self) { owner, date in
-//                print(date)
-////                owner.userDate.onNext(date)
-//                owner.userDate.accept(date) //릴레이는 accept로 보내줌
-//
-//            }
-//            .disposed(by: disposeBag)
-        
-        userDate
-            .bind(with: self) { owner, date in
-                
-                let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
-                owner.yearLabel.text = "\(components.year!)"
-                owner.monthLabel.text = "\(components.month!)"
-                owner.dayLabel.text = "\(components.day!)"
-
-            }
-            .disposed(by: disposeBag)
-        
-        
-        // "drive"
-        // 위에 birthDayPicker의 bind와 같은 의미
-        birthDayPicker.rx.date
-            .asDriver() //asDriver로 타입을 바꿔줘야 drive 사용 가능 : 메인스레드에서만 동작을 보장함
-            .drive(with: self) { owner, date in
-                print(date)
-                owner.userDate.accept(date) // 릴레이는 accept로 보내줌
-            }
-            .disposed(by: disposeBag)
-        
-     
-        
+    @objc func nextButtonClicked() {
+        navigationController?.pushViewController(SearchViewController(), animated: true)
     }
-    
-    
-//    @objc func nextButtonClicked() {
-//        navigationController?.pushViewController(SearchViewController(), animated: true)
-//    }
 
     
     func configureLayout() {
