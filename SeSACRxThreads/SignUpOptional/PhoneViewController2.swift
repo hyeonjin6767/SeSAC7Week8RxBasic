@@ -14,8 +14,12 @@ import RxCocoa
 
 class PhoneViewController2: UIViewController {
    
-    let phoneTextField = SignTextField(placeholderText: "연락처를 입력해주세요")
-    let nextButton = PointButton(title: "다음")
+//    let phoneTextField = SignTextField(placeholderText: "연락처를 입력해주세요")
+    let phoneTextField = SignTextField(placeholderText: "")
+
+//    let nextButton = PointButton(title: "다음")
+    let nextButton = PointButton(title: "")
+
     
     
     
@@ -41,6 +45,8 @@ class PhoneViewController2: UIViewController {
     
     func bind() {
         
+        
+        
         // 인풋 아웃풋을 고민하지말고 그냥 해
         
         // 버튼 클릭시 텍스트필드에 글자 출력을 인풋아웃풋 구조로 만들기 위해 2파트로 나눠서 함
@@ -60,8 +66,12 @@ class PhoneViewController2: UIViewController {
 //            .disposed(by: disposeBag)
         
         
+        
+        
+        
+        
         // 뷰모델에서 인풋/아웃풋 만들때 타입확인용
-        let a = nextButton.rx.tap // 여기까지가 사실상 인풋에 해당 : a의 타입을 확인해보면 ControlEvent<Void> : 탭 자체를 인풋에 던저보자 : 뷰모델에 해당타입으로 선언해주자
+//        let a = nextButton.rx.tap // 여기까지가 사실상 인풋에 해당 : a의 타입을 확인해보면 ControlEvent<Void> : 탭 자체를 인풋에 던저보자 : 뷰모델에 해당타입으로 선언해주자
         
         // 여태 커스텀뷰모델과 유사하지만 이니셜라이즈만 바깥으로 여기 나옴 : 뷰컨에서 일어나는 모든일은 다 뷰모델로 떼려넣고, 데이터에 대한 조작은 다 뷰모델에서 하기.
         let input = PhoneViewModel.Input(buttonTap: nextButton.rx.tap) // 뷰모델로 nextButton의 눌렸음을 던져주기
@@ -71,12 +81,16 @@ class PhoneViewController2: UIViewController {
         output.text // 아웃풋에 대한 내용을 받아서만 처리
             .bind(to: phoneTextField.rx.text) // transform의 반환값을 폰텍스트필드에 보여줘
             .disposed(by: disposeBag)
-        
+        output.palceholder
+            .bind(to: phoneTextField.rx.placeholder)
+            .disposed(by: disposeBag)
+        output.next
+            .bind(to: nextButton.rx.title())
+            .disposed(by: disposeBag)
         
        
         
         
-
         
     }
     

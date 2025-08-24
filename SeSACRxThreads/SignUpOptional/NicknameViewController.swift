@@ -65,7 +65,7 @@ class NicknameViewController: UIViewController {
                 
                 // 버튼 클릭시 이벤트(random이라는 내용으로 바꿔달라는:옵저버 역할)를 전달(이벤트를 전달:옵저버블의 역할) -> 모든 이벤트의 전달은 onNext가 담당
                 owner.text.onNext(random) // owner.text = random(안되는코드) : text에 랜덤이라는 문자열을 넣어주고싶은것같은 의미
-                //Subject로 쓰는 이유와 =(대입:등호)대신에 온넥스트라고 하는지가 포인트
+                // Subject로 쓰는 이유와 =(대입:등호)대신에 온넥스트라고 하는지가 포인트
             }
             .disposed(by: disposeBag)
         

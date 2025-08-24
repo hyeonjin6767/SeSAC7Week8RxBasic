@@ -76,7 +76,7 @@ class BirthdayViewController: UIViewController {
     let userDate = BehaviorRelay(value: Date())
     // BehaviorRelays도 바인드처럼 넥스트이벤트만 다루는 애 서브젝트 업그레이드가 릴레이 : (서브스크라이브 업그레이드가 바인드인 것 처럼)
     // 우선은 기분에 따라 골라서 써봐
-    // "drive"는 또 뭐지 :  바인드 업그레이드 버전? : 넥스트이벤트만 담당 및 메인쓰레드에서만 동작 하는 애
+    // "drive"는 또 뭐지 : 바인드 업그레이드 버전? : 넥스트이벤트만 담당 및 메인쓰레드에서만 동작 하는 애
     
     
     
@@ -88,8 +88,8 @@ class BirthdayViewController: UIViewController {
         configureLayout()
         
         bind()
-//        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
         
+//        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
         
     }
     
@@ -97,14 +97,18 @@ class BirthdayViewController: UIViewController {
         
         // birthDayPicker이 옵저버블의 역할로
         
-//        birthDayPicker.rx.date
-//            .bind(with: self) { owner, date in
-//                print(date)
-////                owner.userDate.onNext(date)
-//                owner.userDate.accept(date) //릴레이는 accept로 보내줌
-//
-//            }
-//            .disposed(by: disposeBag)
+        /*
+         
+        birthDayPicker.rx.date
+            .bind(with: self) { owner, date in
+                print(date)
+//                owner.userDate.onNext(date)
+                owner.userDate.accept(date) //릴레이는 accept로 보내줌
+
+            }
+            .disposed(by: disposeBag)
+         
+        */
         
         userDate
             .bind(with: self) { owner, date in
@@ -124,7 +128,7 @@ class BirthdayViewController: UIViewController {
             .asDriver() //asDriver로 타입을 바꿔줘야 drive 사용 가능 : 메인스레드에서만 동작을 보장함
             .drive(with: self) { owner, date in
                 print(date)
-                owner.userDate.accept(date) // 릴레이는 accept로 보내줌
+                owner.userDate.accept(date) // relay는 accept로 보내줌
             }
             .disposed(by: disposeBag)
         

@@ -108,6 +108,11 @@ class SearchViewController: UIViewController {
         }
         .disposed(by: disposeBag)
         
+        //        searchBar.rx.searchButtonClicked
+        //            .withLatestFrom(searchBar.rx.text.orEmpty) { _, text in
+        //                return text // 매개변수를 그대로 갖다쓰기 여서 간단하게 대괄호 부분 생략
+        //            }
+        
         // 서치바에 입력후 엔터 치면 배열에 데이터 추가, 테이블뷰에 반영
 //        searchBar.rx.searchButtonClicked
 //            .withLatestFrom(searchBar.rx.text.orEmpty) { _, text in
